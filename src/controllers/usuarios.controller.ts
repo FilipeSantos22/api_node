@@ -18,6 +18,10 @@ export class UsuariosController {
         }
 
         const { senha, ...rest } = usuario as any;
+        const requesterId = Number((req as any).user?.sub);
+        if (requesterId && requesterId !== id) {
+            return res.status(403).json({ message: 'Acesso negado' });
+        }
         return res.json(rest);
     }
 
@@ -30,6 +34,10 @@ export class UsuariosController {
 
     async atualizar(req: Request, res: Response) {
         const id = Number(req.params.id);
+        const requesterId = Number((req as any).user?.sub);
+        if (requesterId && requesterId !== id) {
+            return res.status(403).json({ message: 'Acesso negado' });
+        }
         const data = req.body;
         const updated = await this.service.atualizar(id, data);
         const { senha, ...rest } = updated as any;
@@ -38,6 +46,10 @@ export class UsuariosController {
 
     async excluir(req: Request, res: Response) {
         const id = Number(req.params.id);
+        const requesterId = Number((req as any).user?.sub);
+        if (requesterId && requesterId !== id) {
+            return res.status(403).json({ message: 'Acesso negado' });
+        }
         await this.service.excluir(id);
         return res.status(204).send();
     }

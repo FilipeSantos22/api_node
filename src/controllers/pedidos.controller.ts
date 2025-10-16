@@ -17,11 +17,19 @@ export class PedidosController {
             return res.status(404).json({ message: 'Pedido não encontrado' });
         }
 
+        const requesterId = Number((req as any).user?.sub);
+        if (requesterId && pedido.usuario_id !== requesterId) {
+            return res.status(403).json({ message: 'Acesso negado' });
+        }
         return res.json(pedido);
     }
 
     async criar(req: Request, res: Response) {
         const { usuario_id, items } = req.body;
+        const requesterId = Number((req as any).user?.sub);
+        if (requesterId && requesterId !== usuario_id) {
+            return res.status(403).json({ message: 'Acesso negado' });
+        }
         const pedido = await this.service.criar(usuario_id, items);
         return res.status(201).json(pedido);
     }
