@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model usuarios {
+  id        Int       @id @default(autoincrement())
+  nome      String    @db.VarChar(100)
+  email     String    @unique @db.VarChar(100)
+  senha     String    @db.VarChar(255)
+  cep       String?   @db.VarChar(9)
+  rua       String?   @db.VarChar(150)
+  bairro    String?   @db.VarChar(100)
+  cidade    String?   @db.VarChar(100)
+  estado    String?   @db.VarChar(2)
+  criado_em DateTime  @default(now())
+  pedidos   pedidos[]
+}
+
+model produtos {
+  id        Int            @id @default(autoincrement())
+  nome      String         @db.VarChar(150)
+  preco     Decimal        @db.Decimal(10, 2)
+  estoque   Int            @default(0)
+  criado_em DateTime       @default(now())
+  itens     itens_pedido[]
+}
+
+model pedidos {
+  id         Int            @id @default(autoincrement())
+  usuario_id Int
+  total      Decimal        @default(0) @db.Decimal(12, 2)
+  criado_em  DateTime       @default(now())
+  usuario    usuarios       @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  itens      itens_pedido[]
+}
+
+model itens_pedido {
+  id         Int      @id @default(autoincrement())
+  pedido_id  Int
+  produto_id Int
+  quantidade Int
+  preco      Decimal  @db.Decimal(10, 2)
+  pedido     pedidos  @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  produto    produtos @relation(fields: [produto_id], references: [id], onDelete: Restrict)
+}
