@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import router from './routes/index';
 import { errorHandler } from './middlewares/errorHandler';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const app = express();
 
