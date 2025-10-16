@@ -34,6 +34,6 @@ export class ProdutosController {
     async excluir(req: Request, res: Response) {
         const id = Number(req.params.id);
         await this.service.excluir(id);
-        return res.status(204).send();
+        return res.status(200).send({ message: 'Produto excluído com sucesso' });
     }
 }
