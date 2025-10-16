@@ -7,7 +7,13 @@ export class PedidosService {
     }
 
     async obterPorId(id: number) {
-        return PedidosRepository.findById(id);
+        const pedido = await PedidosRepository.findByIdPedido(id);
+
+        if (!pedido) {
+            throw { statusCode: 400, message: 'Esse pedido não existe.' };
+        }
+
+        return pedido;
     }
 
     async criar(usuario_id: number, items: Array<any>) {
@@ -15,6 +21,21 @@ export class PedidosService {
             throw { statusCode: 400, message: 'Pedido deve ter ao menos 1 item' };
         }
 
+        await this.verificarQuantidade(items);
+        await this.verificarEstoque(items);
+
+        return PedidosRepository.createWithItems(usuario_id, items);
+    }
+
+    async verificarQuantidade (items: Array<any>) {
+        for (const it of items) {
+            if (it.quantidade <= 0) {
+                throw { statusCode: 400, message: `Quantidade inválida para produto ${it.produto_id}` };
+            }
+        }
+    }
+
+    async verificarEstoque (items: Array<any>) {
         for (const it of items) {
             const produto = await ProdutosRepository.findById(it.produto_id);
             
@@ -26,8 +47,6 @@ export class PedidosService {
                 throw { statusCode: 400, message: `Estoque insuficiente para produto ${it.produto_id}` };
             }
         }
-
-        return PedidosRepository.createWithItems(usuario_id, items);
     }
 
     async atualizar(id: number, data: any) {
@@ -35,6 +54,7 @@ export class PedidosService {
     }
 
     async excluir(id: number) {
-        return PedidosRepository.delete(id);
+        await this.obterPorId(id);
+        return PedidosRepository.deleteWithRestock(id);
     }
 }
