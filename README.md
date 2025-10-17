@@ -1,11 +1,5 @@
 # API - Teste Manto Sistemas
 
-Documentação rápida:
-
-Instalação de dependências para Swagger:
-
-# API - Teste Manto Sistemas
-
 Bem-vindo(a) ao repositório da API do Teste Manto Sistemas para vaga de desenvolvedor Back-End. Este README traz instruções claras e passo a passo para instalar, configurar e executar a aplicação localmente, além de mostrar como acessar a documentação interativa (Swagger) e dicas rápidas de desenvolvimento.
 
 ## Pré-requisitos
@@ -336,7 +330,3 @@ Na response você pode pegar o TOKEN.
 ## Contato
 
 Se precisar de ajuda, pode entrar em contato comigo que estou a disposição.
-
----
-
-Feito com atenção — README gerado automaticamente durante a sessão de desenvolvimento. Se quiser que eu inclua instruções específicas (ex: Docker, deploy, scripts de testes) diga o que prefere e eu adiciono.
