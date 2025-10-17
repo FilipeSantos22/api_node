@@ -25,12 +25,6 @@ export class UsuariosController {
         return res.json(rest);
     }
 
-    async criar(req: Request, res: Response) {
-        const data = req.body;
-        const created = await this.service.criar(data);
-        const { senha, ...rest } = created as any;
-        return res.status(201).json(rest);
-    }
 
     async atualizar(req: Request, res: Response) {
         const id = Number(req.params.id);
@@ -47,9 +41,11 @@ export class UsuariosController {
     async excluir(req: Request, res: Response) {
         const id = Number(req.params.id);
         const requesterId = Number((req as any).user?.sub);
+
         if (requesterId && requesterId !== id) {
             return res.status(403).json({ message: 'Acesso negado' });
         }
+
         await this.service.excluir(id);
         return res.status(204).send();
     }

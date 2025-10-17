@@ -9,10 +9,6 @@ export class UsuariosService {
         return UsuariosRepository.findById(id);
     }
 
-    async criar(data: any) {
-        return UsuariosRepository.create(data);
-    }
-
     async atualizar(id: number, data: any) {
         return UsuariosRepository.update(id, data);
     }

@@ -9,10 +9,6 @@ export const UsuariosRepository = {
         return prisma.usuarios.findUnique({ where: { id } });
     },
 
-    create(data: any) {
-        return prisma.usuarios.create({ data });
-    },
-
     update(id: number, data: any) {
         return prisma.usuarios.update({ where: { id }, data });
     },
