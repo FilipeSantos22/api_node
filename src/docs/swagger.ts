@@ -295,6 +295,168 @@ const swaggerSpec: any = {
                 }
             }
         },
+        // 🛒 PRODUTOS
+        '/produtos': {
+            get: {
+                tags: ['Produtos'],
+                security: [{ bearerAuth: [] }],
+                summary: 'Listar produtos',
+                responses: {
+                    200: {
+                        description: 'Lista de produtos',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'array',
+                                    items: { $ref: '#/components/schemas/Produto' }
+                                }
+                            }
+                        }
+                    },
+                    401: { $ref: '#/components/responses/Unauthorized' }
+                }
+            },
+            post: {
+                tags: ['Produtos'],
+                security: [{ bearerAuth: [] }],
+                summary: 'Criar produto',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    nome: { type: 'string' },
+                                    preco: { type: 'number' },
+                                    estoque: { type: 'integer' }
+                                },
+                                required: ['nome', 'preco']
+                            },
+                            example: { nome: 'Caneta Azul', preco: 3.5, estoque: 100 }
+                        }
+                    }
+                },
+                responses: {
+                    201: { description: 'Produto criado', content: { 'application/json': { schema: { $ref: '#/components/schemas/Produto' } } } },
+                    400: { $ref: '#/components/responses/BadRequest' },
+                    401: { $ref: '#/components/responses/Unauthorized' }
+                }
+            }
+        },
+        '/produtos/{id}': {
+            get: {
+                tags: ['Produtos'],
+                security: [{ bearerAuth: [] }],
+                parameters: [ { name: 'id', in: 'path', required: true, schema: { type: 'integer' } } ],
+                summary: 'Obter produto por ID',
+                responses: {
+                    200: { description: 'Produto encontrado', content: { 'application/json': { schema: { $ref: '#/components/schemas/Produto' } } } },
+                    404: { $ref: '#/components/responses/NotFound' },
+                    401: { $ref: '#/components/responses/Unauthorized' }
+                }
+            },
+            put: {
+                tags: ['Produtos'],
+                security: [{ bearerAuth: [] }],
+                parameters: [ { name: 'id', in: 'path', required: true, schema: { type: 'integer' } } ],
+                summary: 'Atualizar produto',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    nome: { type: 'string' },
+                                    preco: { type: 'number' },
+                                    estoque: { type: 'integer' }
+                                }
+                            },
+                            example: { nome: 'Caneta Azul XL', preco: 4.0, estoque: 120 }
+                        }
+                    }
+                },
+                responses: {
+                    200: { description: 'Produto atualizado', content: { 'application/json': { schema: { $ref: '#/components/schemas/Produto' } } } },
+                    400: { $ref: '#/components/responses/BadRequest' },
+                    401: { $ref: '#/components/responses/Unauthorized' },
+                    404: { $ref: '#/components/responses/NotFound' }
+                }
+            },
+            delete: {
+                tags: ['Produtos'],
+                security: [{ bearerAuth: [] }],
+                parameters: [ { name: 'id', in: 'path', required: true, schema: { type: 'integer' } } ],
+                summary: 'Remover produto',
+                responses: { 200: { description: 'Produto removido' }, 401: { $ref: '#/components/responses/Unauthorized' }, 404: { $ref: '#/components/responses/NotFound' } }
+            }
+        },
+        '/pedidos': {
+            get: {
+                tags: ['Pedidos'],
+                security: [{ bearerAuth: [] }],
+                summary: 'Listar pedidos',
+                responses: {
+                    200: {
+                        description: 'Lista de pedidos',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'array',
+                                    items: { $ref: '#/components/schemas/Pedido' }
+                                }
+                            }
+                        }
+                    },
+                    401: { $ref: '#/components/responses/Unauthorized' }
+                }
+            },
+            post: {
+                tags: ['Pedidos'],
+                security: [{ bearerAuth: [] }],
+                summary: 'Criar pedido',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    usuario_id: { type: 'integer' },
+                                    items: {
+                                        type: 'array',
+                                        items: {
+                                            type: 'object',
+                                            properties: {
+                                                produto_id: { type: 'integer' },
+                                                quantidade: { type: 'integer' },
+                                                preco: { type: 'number' }
+                                            },
+                                            required: ['produto_id', 'quantidade']
+                                        }
+                                    }
+                                },
+                                required: ['usuario_id', 'items']
+                            },
+                            example: {
+                                usuario_id: 1,
+                                items: [
+                                    { produto_id: 1, quantidade: 2 },
+                                    { produto_id: 2, quantidade: 1 }
+                                ]
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    201: { description: 'Pedido criado', content: { 'application/json': { schema: { $ref: '#/components/schemas/Pedido' } } } },
+                    400: { $ref: '#/components/responses/BadRequest' },
+                    401: { $ref: '#/components/responses/Unauthorized' }
+                }
+            }
+        },
+
         '/pedidos/{id}': {
         get: {
             tags: ['Pedidos'],
@@ -349,7 +511,7 @@ const swaggerSpec: any = {
         },
 
         // ITENS DO PEDIDO
-        '/pedidos/{pedido_id}/itens': {
+        '/itens-pedidos/{pedido_id}/itens': {
         get: {
             tags: ['ItensPedido'],
             security: [{ bearerAuth: [] }],
@@ -388,14 +550,17 @@ const swaggerSpec: any = {
                     'application/json': {
                         schema: {
                             type: 'object',
+                            description: "Operações suportadas: 'adicionar' (produto_novo_id, quantidade, preco opcional), 'remover' (produto_antigo_id), 'substituir' (produto_antigo_id, produto_novo_id, quantidade, preco opcional).",
                             properties: {
-                            produto_antigo_id: { type: 'integer' },
-                            produto_novo_id: { type: 'integer' },
-                            quantidade: { type: 'integer' },
-                            preco: { type: 'number' },
-                            acao: { type: 'string' }
-                            }
-                        }
+                                acao: { type: 'string', description: "Ação a executar", enum: ['adicionar','remover','substituir'] },
+                                produto_antigo_id: { type: 'integer' },
+                                produto_novo_id: { type: 'integer' },
+                                quantidade: { type: 'integer' },
+                                preco: { type: 'number' }
+                            },
+                            required: ['acao']
+                        },
+                        example: { acao: 'substituir', produto_antigo_id: 2, produto_novo_id: 3, quantidade: 1, preco: 10.0 }
                     }
                 }
             },
@@ -419,7 +584,7 @@ const swaggerSpec: any = {
             }
         }
         },
-        '/pedidos/{pedido_id}/itens/{id}': {
+        '/itens-pedidos/{pedido_id}/itens/{id}': {
         get: {
             tags: ['ItensPedido'],
             security: [{ bearerAuth: [] }],
