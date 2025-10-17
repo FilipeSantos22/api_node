@@ -5,6 +5,12 @@ export class ItensPedidosController {
     private service = new ItensPedidosService();
 
     async listar(_req: Request, res: Response) {
+        const pedido_id = _req.params.pedido_id ? Number(_req.params.pedido_id) : undefined;
+        if (pedido_id) {
+            const itens = await this.service.listarPorPedido(pedido_id);
+            return res.json(itens);
+        }
+
         const itens = await this.service.listarTodos();
         return res.json(itens);
     }
@@ -20,16 +26,11 @@ export class ItensPedidosController {
         return res.json(item);
     }
 
-    async criar(req: Request, res: Response) {
-        const { pedido_id, produto_id, quantidade, preco } = req.body;
-        const item = await this.service.criar(pedido_id, produto_id, quantidade, preco);
-        return res.status(201).json(item);
-    }
 
     async atualizar(req: Request, res: Response) {
-        const id = Number(req.params.id);
+        const pedido_id = Number(req.params.pedido_id);
         const data = req.body;
-        const updated = await this.service.atualizar(id, data);
+        const updated = await this.service.atualizar(pedido_id, data);
         return res.json(updated);
     }
 
