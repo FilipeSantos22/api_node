@@ -19,11 +19,6 @@ export const PedidosRepository =  {
         return pedido;
     },
 
-    async findByIdPedido(id: number) {
-        const pedido = await prisma.pedidos.findUnique({ where: { id } });
-        return pedido;
-    },
-
     create(data: any) {
         return prisma.pedidos.create({ data });
     },

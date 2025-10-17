@@ -2,13 +2,13 @@ import { PedidosRepository } from '../repositories/pedidos.repository';
 import { ProdutosRepository } from '../repositories/produtos.repository';
 
 export class PedidosService {
+    static obterPorId: any;
     async listarTodos() {
         return PedidosRepository.findAll();
     }
 
     async obterPorId(id: number) {
-        const pedido = await PedidosRepository.findByIdPedido(id);
-
+        const pedido = await PedidosRepository.findById(id);
         if (!pedido) {
             throw { statusCode: 400, message: 'Esse pedido não existe.' };
         }
@@ -50,6 +50,7 @@ export class PedidosService {
     }
 
     async atualizar(id: number, data: any) {
+        await this.obterPorId(id);
         return PedidosRepository.update(id, data);
     }
 
